@@ -1,19 +1,24 @@
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import AllExpenses from "../screens/AllExpenses";
 import RecentExpenses from "../screens/RecentExpenses";
-import { type BottomTabParamList } from "../types/navigation.types";
+import {
+  RootStackParamList,
+  type BottomTabParamList,
+} from "../types/navigation.types";
 
-
-const BottomTabs = createBottomTabNavigator<BottomTabParamList>();
+const BottomTabs = createBottomTabNavigator<
+  BottomTabParamList & RootStackParamList
+>();
 
 function ExpensesOverview() {
   return (
     <BottomTabs.Navigator
       initialRouteName="RecentExpenses"
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: GlobalStyles.colors.primary500,
         },
@@ -22,7 +27,15 @@ function ExpensesOverview() {
           backgroundColor: GlobalStyles.colors.primary500,
         },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
-      }}
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            icon="add"
+            size={35}
+            color={tintColor}
+            onPress={() => navigation.navigate("ManageExpense")}
+          />
+        ),
+      })}
     >
       <BottomTabs.Screen
         name="RecentExpenses"
@@ -30,14 +43,22 @@ function ExpensesOverview() {
         options={{
           title: "Recent Expenses",
           tabBarLabel: "Recent",
-          tabBarIcon: ({color, size}) => <Ionicons name="hourglass" color={color} size={size} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="hourglass" color={color} size={size} />
+          ),
         }}
       />
-      <BottomTabs.Screen name="AllExpenses" component={AllExpenses} options={{
+      <BottomTabs.Screen
+        name="AllExpenses"
+        component={AllExpenses}
+        options={{
           title: "All Expenses",
           tabBarLabel: "All Expenses",
-          tabBarIcon: ({color, size}) => <Ionicons name="calendar" color={color} size={size} />
-        }} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" color={color} size={size} />
+          ),
+        }}
+      />
     </BottomTabs.Navigator>
   );
 }

@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
   Overview: undefined;
@@ -14,6 +14,8 @@ export type ManageExpenseProps = NativeStackScreenProps<
   RootStackParamList,
   "ManageExpense"
 >;
+
+export type StackNavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export type BottomTabParamList = {
   RecentExpenses: undefined;

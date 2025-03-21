@@ -1,18 +1,10 @@
-import { FlatList, View, Text } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 
+import ExpenseItem from "./ExpenseItem";
 import { Expense } from "../../types/expenses.types";
 
 type ExpensesListProps = {
   expenses: Expense[];
-};
-
-const ExpenseItem = ({ amount, description }: Expense) => {
-  return (
-    <View>
-      <Text>{description}</Text>
-      <Text>{amount}</Text>
-    </View>
-  );
 };
 
 function ExpensesList({ expenses }: ExpensesListProps) {
@@ -25,3 +17,5 @@ function ExpensesList({ expenses }: ExpensesListProps) {
   );
 }
 export default ExpensesList;
+
+const styles = StyleSheet.create({});

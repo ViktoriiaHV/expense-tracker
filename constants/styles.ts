@@ -13,4 +13,7 @@ export const GlobalStyles = {
     gray500: '#616161',
     gray700: '#424242',
   },
+  pressedButton: {
+    opacity: 0.75
+  }
 };
