@@ -1,6 +1,7 @@
-import { Text } from "react-native";
+import ExpensesOutput from "../components/expenses-output/ExpensesOutput";
+import { DUMMY_EXPENSES } from "../constants/dummy-data";
 
 function AllExpenses() {
-  return <Text>All Expenses Screen</Text>;
+  return <ExpensesOutput expenses={DUMMY_EXPENSES} expensesPeriod="Total"/>;
 }
 export default AllExpenses;

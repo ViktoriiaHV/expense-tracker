@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function MainNavigation() {
   return (
     <Stack.Navigator initialRouteName="Overview">
-      <Stack.Screen name="Overview" component={ExpensesOverview} />
+      <Stack.Screen name="Overview" component={ExpensesOverview} options={{headerShown: false}}/>
       <Stack.Screen name="ManageExpense" component={ManageExpense} />
     </Stack.Navigator>
   );
