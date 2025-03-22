@@ -1,7 +1,8 @@
 import ExpensesOutput from "../components/expenses-output/ExpensesOutput";
-import { DUMMY_EXPENSES } from "../constants/dummy-data";
+import { useExpenses } from "../store/expenses-context/ExpensesContext";
 
 function RecentExpenses() {
-  return <ExpensesOutput expensesPeriod="Last 7 days" expenses={DUMMY_EXPENSES} />;
+  const { expenses } = useExpenses();
+  return <ExpensesOutput expensesPeriod="Last 7 days" expenses={expenses} />;
 }
 export default RecentExpenses;

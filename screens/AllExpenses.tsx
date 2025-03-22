@@ -1,7 +1,9 @@
 import ExpensesOutput from "../components/expenses-output/ExpensesOutput";
-import { DUMMY_EXPENSES } from "../constants/dummy-data";
+import { useExpenses } from "../store/expenses-context/ExpensesContext";
 
 function AllExpenses() {
-  return <ExpensesOutput expenses={DUMMY_EXPENSES} expensesPeriod="Total"/>;
+  const {expenses} = useExpenses();
+  
+  return <ExpensesOutput expenses={expenses} expensesPeriod="Total"/>;
 }
 export default AllExpenses;

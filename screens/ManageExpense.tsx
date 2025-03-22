@@ -4,11 +4,14 @@ import { StyleSheet, View } from "react-native";
 import Button from "../components/UI/Button";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
+import { useExpenses } from "../store/expenses-context/ExpensesContext";
 import { ManageExpenseProps } from "../types/navigation.types";
 
 function ManageExpense({ route, navigation }: ManageExpenseProps) {
   const editedExpenseId = route.params?.id;
   const isEditing = !!editedExpenseId;
+
+  const { removeExpense } = useExpenses();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -17,14 +20,17 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
   }, [isEditing, navigation]);
 
   const handleDeleteExpense = () => {
-    // @TODO: delete
+    if (!isEditing) {
+      return;
+    }
+    removeExpense(editedExpenseId);
     navigation.goBack();
   };
 
   const handleCancel = () => navigation.goBack();
 
   const handleConfirm = () => {
-    // @TODO: delete
+    // @TODO: add expense
     navigation.goBack();
   };
 
