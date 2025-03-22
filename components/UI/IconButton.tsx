@@ -14,15 +14,16 @@ type IconButtonProps = {
   icon: ComponentProps<typeof Ionicons>["name"];
   size: number;
   color?: string;
+  style?: object
 };
 
-function IconButton({ onPress, icon, size, color }: IconButtonProps) {
+function IconButton({ onPress, icon, size, color, style }: IconButtonProps) {
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => pressed && GlobalStyles.pressedButton}
     >
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer, style]}>
         <Ionicons size={size} name={icon} color={color} />
       </View>
     </Pressable>
@@ -35,6 +36,5 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginHorizontal: 10,
     marginBottom: 5,
-    backgroundColor: GlobalStyles.colors.primary200,
   },
 });

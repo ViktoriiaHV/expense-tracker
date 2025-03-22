@@ -5,20 +5,15 @@ import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import AllExpenses from "../screens/AllExpenses";
 import RecentExpenses from "../screens/RecentExpenses";
-import {
-  RootStackParamList,
-  type BottomTabParamList,
-} from "../types/navigation.types";
+import { RootStackParamList, type BottomTabParamList } from "../types/navigation.types";
 
-const BottomTabs = createBottomTabNavigator<
-  BottomTabParamList & RootStackParamList
->();
+const BottomTabs = createBottomTabNavigator<BottomTabParamList & RootStackParamList>();
 
 function ExpensesOverview() {
   return (
     <BottomTabs.Navigator
       initialRouteName="RecentExpenses"
-      screenOptions={({ navigation }) => ({
+      screenOptions={({navigation}) => ({
         headerStyle: {
           backgroundColor: GlobalStyles.colors.primary500,
         },
@@ -32,7 +27,7 @@ function ExpensesOverview() {
             icon="add"
             size={35}
             color={tintColor}
-            onPress={() => navigation.navigate("ManageExpense")}
+            onPress={() => navigation.navigate('ManageExpense', {})}
           />
         ),
       })}

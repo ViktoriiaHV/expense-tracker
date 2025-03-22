@@ -6,18 +6,27 @@ import { GlobalStyles } from "../../constants/styles";
 import { Expense } from "../../types/expenses.types";
 import { StackNavigationProps } from "../../types/navigation.types";
 
-function ExpenseItem({ amount, description, date }: Expense) {
-  const navigation = useNavigation<StackNavigationProps>()
+function ExpenseItem({ id, amount, description, date }: Expense) {
+  const navigation = useNavigation<StackNavigationProps>();
 
   const pressItemHandler = () => {
-    navigation.navigate('ManageExpense');
-  }
+    navigation.navigate("ManageExpense", {
+      id,
+    });
+  };
   return (
-    <Pressable onPress={pressItemHandler}  style={({ pressed }) => pressed && GlobalStyles.pressedButton}>
+    <Pressable
+      onPress={pressItemHandler}
+      style={({ pressed }) => pressed && GlobalStyles.pressedButton}
+    >
       <View style={styles.expenseItem}>
         <View>
-          <Text style={[styles.textBase, styles.description]}>{description}</Text>
-          <Text style={styles.textBase}>{intlFormat(date, { dateStyle: "short"})}</Text>
+          <Text style={[styles.textBase, styles.description]}>
+            {description}
+          </Text>
+          <Text style={styles.textBase}>
+            {intlFormat(date, { dateStyle: "short" })}
+          </Text>
         </View>
 
         <View style={styles.amountContainer}>
@@ -34,34 +43,34 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 8,
     backgroundColor: GlobalStyles.colors.primary500,
-    flexDirection:'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     borderRadius: 6,
     elevation: 3,
     shadowColor: GlobalStyles.colors.gray500,
     shadowRadius: 4,
-    shadowOffset: { width: 1, height: 1},
-    shadowOpacity: 0.4
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
   },
   textBase: {
-    color: GlobalStyles.colors.primary50
+    color: GlobalStyles.colors.primary50,
   },
   description: {
     fontSize: 16,
     marginBottom: 4,
-    fontWeight: 'bold'
-  }, 
+    fontWeight: "bold",
+  },
   amountContainer: {
     paddingHorizontal: 12,
     paddingVertical: 4,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 4,
-    minWidth: 80
-  }, 
+    minWidth: 80,
+  },
   amount: {
     color: GlobalStyles.colors.primary500,
-    fontWeight: 'bold'
-  }
+    fontWeight: "bold",
+  },
 });
