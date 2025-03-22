@@ -5,16 +5,16 @@ import { type Expense } from "../../types/expenses.types";
 
 type ExpensesContextType = {
   expenses: Expense[];
-  addExpense: (_expense: Expense) => void;
+  addExpense: (_expense: Omit<Expense, "id">) => void;
   removeExpense: (_expenseId: Expense["id"]) => void;
-  updateExpense: (expense: Expense) => void;
+  updateExpense: (expense: Partial<Expense>) => void;
 };
 
 const inititalExpensesState: ExpensesContextType = {
   expenses: [],
-  addExpense: (_expense: Expense) => {},
+  addExpense: (_expense: Omit<Expense, "id">) => {},
   removeExpense: (_expenseId: Expense["id"]) => {},
-  updateExpense: (_expense: Expense) => {},
+  updateExpense: (_expense: Partial<Expense>) => {},
 };
 
 const ExpensesContext = createContext<ExpensesContextType>(

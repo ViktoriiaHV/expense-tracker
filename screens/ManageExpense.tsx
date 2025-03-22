@@ -11,7 +11,7 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
   const editedExpenseId = route.params?.id;
   const isEditing = !!editedExpenseId;
 
-  const { removeExpense } = useExpenses();
+  const { removeExpense, addExpense, updateExpense } = useExpenses();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,7 +30,18 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
   const handleCancel = () => navigation.goBack();
 
   const handleConfirm = () => {
-    // @TODO: add expense
+    if (isEditing) {
+      updateExpense({
+        id: editedExpenseId,
+        description: "This expense has been updated",
+      });
+    } else {
+      addExpense({
+        amount: 29,
+        date: new Date(),
+        description: "This expense has been just added",
+      });
+    }
     navigation.goBack();
   };
 

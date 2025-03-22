@@ -11,7 +11,7 @@ export default function App() {
         <ExpensesContextProvider>
           <MainNavigation />
         </ExpensesContextProvider>
-      </NavigationContainer>
+      </NavigationContainer> 
     </Layout>
   );
 }

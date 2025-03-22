@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 
+import EmptyState from "./EmptyState";
 import ExpensesList from "./ExpensesList";
 import ExpensesSummary from "./ExpensesSummary";
 import { GlobalStyles } from "../../constants/styles";
@@ -7,7 +8,7 @@ import { Expense } from "../../types/expenses.types";
 
 type ExpensesOutputProps = {
   expenses: Expense[];
-  expensesPeriod: string
+  expensesPeriod: string;
 };
 
 function ExpensesOutput({ expenses, expensesPeriod }: ExpensesOutputProps) {
@@ -15,7 +16,11 @@ function ExpensesOutput({ expenses, expensesPeriod }: ExpensesOutputProps) {
     <View style={styles.container}>
       <ExpensesSummary expenses={expenses} expensesPeriod={expensesPeriod} />
 
-      <ExpensesList expenses={expenses} />
+      {expenses.length ? (
+        <ExpensesList expenses={expenses} />
+      ) : (
+        <EmptyState message="You haven't entered any expenses yet" />
+      )}
     </View>
   );
 }
@@ -27,6 +32,6 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingTop: 24,
     flex: 1,
-    backgroundColor: GlobalStyles.colors.primary700
-  }
-})
+    backgroundColor: GlobalStyles.colors.primary700,
+  },
+});
