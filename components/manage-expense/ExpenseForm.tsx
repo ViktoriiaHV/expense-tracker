@@ -1,32 +1,44 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import Input from "./Input";
 import Button from "../../components/UI/Button";
+import { expenseDraft } from "../../constants/dummy-data";
+import { Expense, ExpenseInput } from "../../types/expenses.types";
 
 type ExpenseFormProps = {
-  onSubmit: () => void;
+  onSubmit: (expenseData: Omit<Expense, "id">) => void;
   onCancel: () => void;
-  submitButtonLabel: string;
+  mode: "add" | "edit";
+  expense: Expense | undefined;
 };
 
-function ExpenseForm({
-  onCancel,
-  onSubmit,
-  submitButtonLabel,
-}: ExpenseFormProps) {
-  const [userInput, setUserInput] = useState<{
-    amount: string;
-    date: string;
-    description: string;
-  }>({
-    amount: "",
-    date: "",
-    description: "",
-  });
+function ExpenseForm({ onCancel, onSubmit, mode, expense }: ExpenseFormProps) {
+  const existingExpenseInput = useMemo(
+    () =>
+      expense && {
+        ...expense,
+        date: String(expense.date),
+        amount: String(expense.amount),
+      },
+    [expense]
+  );
+
+  const [userInput, setUserInput] = useState<ExpenseInput>(
+    existingExpenseInput || expenseDraft
+  );
 
   const handleInputChange = (input: keyof typeof userInput, value: string) => {
     setUserInput((prevInput) => ({ ...prevInput, [input]: value }));
+  };
+
+  const submitHandler = () => {
+    const expenseData: Omit<Expense, "id"> = {
+      amount: Number(userInput.amount),
+      date: new Date(userInput.date),
+      description: userInput.description,
+    };
+    onSubmit(expenseData);
   };
 
   return (
@@ -60,8 +72,8 @@ function ExpenseForm({
         <Button variant="link" onPress={onCancel} style={styles.actionButton}>
           Cancel
         </Button>
-        <Button style={styles.actionButton} onPress={onSubmit}>
-          {submitButtonLabel}
+        <Button style={styles.actionButton} onPress={submitHandler}>
+          {mode === "edit" ? "Update" : "Add"}
         </Button>
       </View>
     </View>

@@ -1,28 +1,34 @@
-import { Expense } from "../types/expenses.types";
+import { Expense, ExpenseInput } from "../types/expenses.types";
+
+export const expenseDraft: ExpenseInput = {
+  amount: "",
+  date: "",
+  description: "",
+};
 
 export const DUMMY_EXPENSES: Expense[] = [
   {
-    id: 'e1',
-    description: 'Shoes',
+    id: "e1",
+    description: "Shoes",
     amount: 59.99,
-    date: new Date('2025-03-15')
+    date: new Date("2025-03-15"),
   },
   {
-    id: 'e2',
-    description: 'A new bag',
-    amount: 279.50,
-    date: new Date('2025-02-01')
+    id: "e2",
+    description: "A new bag",
+    amount: 279.5,
+    date: new Date("2025-02-01"),
   },
   {
-    id: 'e3',
-    description: 'Food',
+    id: "e3",
+    description: "Food",
     amount: 137.83,
-    date: new Date('2025-03-20')
+    date: new Date("2025-03-20"),
   },
   {
-    id: 'e4',
-    description: 'Books',
+    id: "e4",
+    description: "Books",
     amount: 53.65,
-    date: new Date('2025-02-21')
+    date: new Date("2025-02-21"),
   },
-]
+];

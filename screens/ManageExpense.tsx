@@ -5,13 +5,16 @@ import IconButton from "../components/UI/IconButton";
 import ExpenseForm from "../components/manage-expense/ExpenseForm";
 import { GlobalStyles } from "../constants/styles";
 import { useExpenses } from "../store/expenses-context/ExpensesContext";
+import { Expense } from "../types/expenses.types";
 import { ManageExpenseProps } from "../types/navigation.types";
 
 function ManageExpense({ route, navigation }: ManageExpenseProps) {
   const editedExpenseId = route.params?.id;
   const isEditing = !!editedExpenseId;
 
-  const { removeExpense, addExpense, updateExpense } = useExpenses();
+  const { removeExpense, addExpense, updateExpense, expenses } = useExpenses();
+
+  const expenseObject = expenses.find((exp) => exp.id === editedExpenseId);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -29,18 +32,11 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
 
   const handleCancel = () => navigation.goBack();
 
-  const handleConfirm = () => {
+  const handleConfirm = (expenseData: Omit<Expense, "id">) => {
     if (isEditing) {
-      updateExpense({
-        id: editedExpenseId,
-        description: "This expense has been updated",
-      });
+      updateExpense(expenseData);
     } else {
-      addExpense({
-        amount: 29,
-        date: new Date(),
-        description: "This expense has been just added",
-      });
+      addExpense(expenseData);
     }
     navigation.goBack();
   };
@@ -50,7 +46,8 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
       <ExpenseForm
         onCancel={handleCancel}
         onSubmit={handleConfirm}
-        submitButtonLabel={isEditing ? "Update" : "Add"}
+        mode={isEditing ? "edit" : "add"}
+        expense={expenseObject}
       />
       <View style={styles.deleteContainer}>
         {isEditing && (

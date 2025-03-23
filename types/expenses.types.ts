@@ -4,3 +4,9 @@ export type Expense = {
   date: Date;
   description: string;
 };
+
+export type ExpenseInput = {
+  amount: string;
+  date: string;
+  description: string;
+}

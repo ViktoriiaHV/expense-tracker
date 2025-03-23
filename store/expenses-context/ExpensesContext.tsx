@@ -32,8 +32,8 @@ export const ExpensesContextProvider = ({
   const addExpense = useCallback((expense: Omit<Expense, "id">) => {
     const newExpenseId = new Date().toString();
     setExpenses((prevExpenses) => [
-      ...prevExpenses,
       { ...expense, id: newExpenseId },
+      ...prevExpenses,
     ]);
   }, []);
 
