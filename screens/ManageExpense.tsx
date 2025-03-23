@@ -1,8 +1,8 @@
 import { useLayoutEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
-import Button from "../components/UI/Button";
 import IconButton from "../components/UI/IconButton";
+import ExpenseForm from "../components/manage-expense/ExpenseForm";
 import { GlobalStyles } from "../constants/styles";
 import { useExpenses } from "../store/expenses-context/ExpensesContext";
 import { ManageExpenseProps } from "../types/navigation.types";
@@ -47,19 +47,11 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.actionButtonsContainer}>
-        <Button
-          variant="link"
-          onPress={handleCancel}
-          style={styles.actionButton}
-        >
-          Cancel
-        </Button>
-        <Button style={styles.actionButton} onPress={handleConfirm}>
-          {isEditing ? "Update" : "Add"}
-        </Button>
-      </View>
-
+      <ExpenseForm
+        onCancel={handleCancel}
+        onSubmit={handleConfirm}
+        submitButtonLabel={isEditing ? "Update" : "Add"}
+      />
       <View style={styles.deleteContainer}>
         {isEditing && (
           <IconButton
