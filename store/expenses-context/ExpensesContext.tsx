@@ -5,16 +5,16 @@ import { type Expense } from "../../types/expenses.types";
 
 type ExpensesContextType = {
   expenses: Expense[];
-  addExpense: (_expense: Omit<Expense, "id">) => void;
+  addExpense: (_expense: Expense) => void;
   removeExpense: (_expenseId: Expense["id"]) => void;
-  updateExpense: (expense: Partial<Expense>) => void;
+  updateExpense: (expense: Expense) => void;
 };
 
 const inititalExpensesState: ExpensesContextType = {
   expenses: [],
-  addExpense: (_expense: Omit<Expense, "id">) => {},
+  addExpense: (_expense: Expense) => {},
   removeExpense: (_expenseId: Expense["id"]) => {},
-  updateExpense: (_expense: Partial<Expense>) => {},
+  updateExpense: (_expense: Expense) => {},
 };
 
 const ExpensesContext = createContext<ExpensesContextType>(
@@ -29,12 +29,8 @@ export const ExpensesContextProvider = ({
   // @TODO rewrite to reducer
   const [expenses, setExpenses] = useState<Expense[]>(DUMMY_EXPENSES);
 
-  const addExpense = useCallback((expense: Omit<Expense, "id">) => {
-    const newExpenseId = new Date().toString();
-    setExpenses((prevExpenses) => [
-      { ...expense, id: newExpenseId },
-      ...prevExpenses,
-    ]);
+  const addExpense = useCallback((expense: Expense) => {
+    setExpenses((prevExpenses) => [expense, ...prevExpenses]);
   }, []);
 
   const removeExpense = useCallback(
@@ -45,22 +41,25 @@ export const ExpensesContextProvider = ({
     [expenses]
   );
 
-  const updateExpense = useCallback(
-    ({ id, ...rest }: Partial<Expense>) => {
-      const editedExpenseIdx = expenses.findIndex(
+  const updateExpense = useCallback(({ id, ...rest }: Partial<Expense>) => {
+    setExpenses((prevExpenses) => {
+      const editedExpenseIdx = prevExpenses.findIndex(
         (expense) => expense.id === id
       );
-      if (!editedExpenseIdx) {
-        return;
+
+      if (editedExpenseIdx === -1) {
+        return prevExpenses;
       }
-      const editedExpense = expenses[editedExpenseIdx];
-      const updatedExpense = { ...editedExpense, ...rest };
-      const updatedExpenses = [...expenses];
-      updatedExpenses[editedExpenseIdx] = updatedExpense;
-      setExpenses(updatedExpenses);
-    },
-    [expenses]
-  );
+
+      const updatedExpenses = [...prevExpenses];
+      updatedExpenses[editedExpenseIdx] = {
+        ...prevExpenses[editedExpenseIdx],
+        ...rest,
+      };
+
+      return updatedExpenses;
+    });
+  }, []);
 
   return (
     <ExpensesContext.Provider

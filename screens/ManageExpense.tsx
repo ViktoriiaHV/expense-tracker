@@ -32,7 +32,7 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
 
   const handleCancel = () => navigation.goBack();
 
-  const handleConfirm = (expenseData: Omit<Expense, "id">) => {
+  const handleConfirm = (expenseData: Expense) => {
     if (isEditing) {
       updateExpense(expenseData);
     } else {

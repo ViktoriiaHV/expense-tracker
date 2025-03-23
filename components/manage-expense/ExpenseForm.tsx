@@ -1,3 +1,4 @@
+import { intlFormat, parse } from "date-fns";
 import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -7,7 +8,7 @@ import { expenseDraft } from "../../constants/dummy-data";
 import { Expense, ExpenseInput } from "../../types/expenses.types";
 
 type ExpenseFormProps = {
-  onSubmit: (expenseData: Omit<Expense, "id">) => void;
+  onSubmit: (expenseData: Expense) => void;
   onCancel: () => void;
   mode: "add" | "edit";
   expense: Expense | undefined;
@@ -18,7 +19,7 @@ function ExpenseForm({ onCancel, onSubmit, mode, expense }: ExpenseFormProps) {
     () =>
       expense && {
         ...expense,
-        date: String(expense.date),
+        date: intlFormat(expense.date, { dateStyle: "short" }),
         amount: String(expense.amount),
       },
     [expense]
@@ -33,9 +34,10 @@ function ExpenseForm({ onCancel, onSubmit, mode, expense }: ExpenseFormProps) {
   };
 
   const submitHandler = () => {
-    const expenseData: Omit<Expense, "id"> = {
+    const expenseData = {
+      id: existingExpenseInput?.id ?? new Date().toString(),
       amount: Number(userInput.amount),
-      date: new Date(userInput.date),
+      date: parse(userInput.date, "dd/MM/yyyy", new Date()),
       description: userInput.description,
     };
     onSubmit(expenseData);
@@ -54,7 +56,7 @@ function ExpenseForm({ onCancel, onSubmit, mode, expense }: ExpenseFormProps) {
         />
         <Input
           label="Date"
-          placeholder="YYYY-MM-DD"
+          placeholder="DD/MM/YYYY"
           maxLength={10}
           onChangeText={(value) => handleInputChange("date", value)}
           style={{ flex: 3 }}
