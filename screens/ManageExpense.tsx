@@ -1,8 +1,9 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { createExpense, deleteExpense, editExpense } from "../api/api";
 import IconButton from "../components/UI/IconButton";
+import Loader from "../components/UI/Loader";
 import ExpenseForm from "../components/manage-expense/ExpenseForm";
 import { GlobalStyles } from "../constants/styles";
 import { useExpenses } from "../store/expenses-context/ExpensesContext";
@@ -12,6 +13,7 @@ import { ManageExpenseProps } from "../types/navigation.types";
 function ManageExpense({ route, navigation }: ManageExpenseProps) {
   const editedExpenseId = route.params?.id;
   const isEditing = !!editedExpenseId;
+  const [isLoading, setIsLoading] = useState(false);
 
   const { removeExpense, addExpense, updateExpense, expenses } = useExpenses();
 
@@ -27,6 +29,7 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
     if (!isEditing) {
       return;
     }
+    setIsLoading(true);
     await deleteExpense(editedExpenseId);
     removeExpense(editedExpenseId);
     navigation.goBack();
@@ -35,6 +38,7 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
   const handleCancel = () => navigation.goBack();
 
   const handleConfirm = async (expenseData: ExpenseInput | Expense) => {
+    setIsLoading(true);
     if (isEditing && "id" in expenseData) {
       await editExpense(expenseData.id, expenseData);
       updateExpense(expenseData);
@@ -46,6 +50,10 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
     }
     navigation.goBack();
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <View style={styles.container}>

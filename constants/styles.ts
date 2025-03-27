@@ -1,17 +1,17 @@
 export const GlobalStyles = {
   colors: {
-    primary50: '#E8F5E9',  // Very light green
-    primary100: '#C8E6C9',
-    primary200: '#81C784',
-    primary400: '#388E3C',
-    primary500: '#2E7D32', // Deep green
-    primary700: '#1B5E20',
-    primary800: '#0E3E12',
-    accent500: '#FFD54F',  // Warm yellow accent
-    error50: '#FFEBEE',
-    error500: '#D32F2F',  // Red for errors
-    gray500: '#616161',
-    gray700: '#424242',
+    primary50: '#d5c8f0',  // Soft lavender
+    primary100: '#b39adc',  
+    primary200: '#9172c5',  
+    primary400: '#6c4ea3',  // Rich deep purple
+    primary500: '#55398a',  
+    primary700: '#3f2a6c',  
+    primary800: '#2c1e50',  
+    accent500: '#e0b654',  // Warm golden yellow
+    error50: '#e9a2b3',  
+    error500: '#8c4a5d',  // Deep berry red
+    gray500: '#453e4f',  // Soft charcoal
+    gray700: '#2f2938',  
   },
   pressedButton: {
     opacity: 0.75

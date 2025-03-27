@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AxiosResponse } from "axios";
-import { useEffect } from "react";
+import { AxiosError, AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
 
 import { fetchExpenses } from "../api/api";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 import IconButton from "../components/UI/IconButton";
+import Loader from "../components/UI/Loader";
 import { GlobalStyles } from "../constants/styles";
 import AllExpenses from "../screens/AllExpenses";
 import RecentExpenses from "../screens/RecentExpenses";
@@ -21,21 +23,44 @@ const BottomTabs = createBottomTabNavigator<
 
 function ExpensesOverview() {
   const { setFetchedExpenses } = useExpenses();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
 
   useEffect(() => {
     const fetchAllExpenses = async () => {
-      const res: AxiosResponse<
-        Record<string, { amount: number; date: string; description: string }>
-      > = await fetchExpenses();
+      try {
+        setIsLoading(true);
+        const res: AxiosResponse<
+          Record<string, { amount: number; date: string; description: string }>
+        > = await fetchExpenses();
+        if (res.status !== 200) {
+          throw Error(
+            "Oops, we filed to fetch your expenses. Please try again"
+          );
+        }
 
-      const data: Expense[] = Object.keys(res.data).map((currKey) => {
-        const { amount, date, description } = res.data[currKey];
-        return { id: currKey, date: new Date(date), amount, description };
-      });
-      setFetchedExpenses(data);
+        const data: Expense[] = Object.keys(res.data).map((currKey) => {
+          const { amount, date, description } = res.data[currKey];
+          return { id: currKey, date: new Date(date), amount, description };
+        });
+        setFetchedExpenses(data);
+      } catch (e) {
+        const message = (e as AxiosError).message;
+        setError(message);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchAllExpenses();
-  }, [setFetchedExpenses]);
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <ErrorOverlay message={error} onConfirm={() => {}} />;
+  }
 
   return (
     <BottomTabs.Navigator
