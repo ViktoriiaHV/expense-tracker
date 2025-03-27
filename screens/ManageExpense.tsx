@@ -1,11 +1,12 @@
 import { useLayoutEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { createExpense, deleteExpense, editExpense } from "../api/api";
 import IconButton from "../components/UI/IconButton";
 import ExpenseForm from "../components/manage-expense/ExpenseForm";
 import { GlobalStyles } from "../constants/styles";
 import { useExpenses } from "../store/expenses-context/ExpensesContext";
-import { Expense } from "../types/expenses.types";
+import { Expense, ExpenseInput } from "../types/expenses.types";
 import { ManageExpenseProps } from "../types/navigation.types";
 
 function ManageExpense({ route, navigation }: ManageExpenseProps) {
@@ -22,21 +23,26 @@ function ManageExpense({ route, navigation }: ManageExpenseProps) {
     });
   }, [isEditing, navigation]);
 
-  const handleDeleteExpense = () => {
+  const handleDeleteExpense = async () => {
     if (!isEditing) {
       return;
     }
+    await deleteExpense(editedExpenseId);
     removeExpense(editedExpenseId);
     navigation.goBack();
   };
 
   const handleCancel = () => navigation.goBack();
 
-  const handleConfirm = (expenseData: Expense) => {
-    if (isEditing) {
+  const handleConfirm = async (expenseData: ExpenseInput | Expense) => {
+    if (isEditing && "id" in expenseData) {
+      await editExpense(expenseData.id, expenseData);
       updateExpense(expenseData);
-    } else {
-      addExpense(expenseData);
+    }
+    if (!isEditing && !("id" in expenseData)) {
+      const res = await createExpense(expenseData);
+      const expenseId = res.data.name;
+      addExpense({ ...expenseData, id: expenseId });
     }
     navigation.goBack();
   };

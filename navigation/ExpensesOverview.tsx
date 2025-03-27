@@ -1,19 +1,46 @@
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AxiosResponse } from "axios";
+import { useEffect } from "react";
 
+import { fetchExpenses } from "../api/api";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import AllExpenses from "../screens/AllExpenses";
 import RecentExpenses from "../screens/RecentExpenses";
-import { RootStackParamList, type BottomTabParamList } from "../types/navigation.types";
+import { useExpenses } from "../store/expenses-context/ExpensesContext";
+import { Expense } from "../types/expenses.types";
+import {
+  RootStackParamList,
+  type BottomTabParamList,
+} from "../types/navigation.types";
 
-const BottomTabs = createBottomTabNavigator<BottomTabParamList & RootStackParamList>();
+const BottomTabs = createBottomTabNavigator<
+  BottomTabParamList & RootStackParamList
+>();
 
 function ExpensesOverview() {
+  const { setFetchedExpenses } = useExpenses();
+
+  useEffect(() => {
+    const fetchAllExpenses = async () => {
+      const res: AxiosResponse<
+        Record<string, { amount: number; date: string; description: string }>
+      > = await fetchExpenses();
+
+      const data: Expense[] = Object.keys(res.data).map((currKey) => {
+        const { amount, date, description } = res.data[currKey];
+        return { id: currKey, date: new Date(date), amount, description };
+      });
+      setFetchedExpenses(data);
+    };
+    fetchAllExpenses();
+  }, [setFetchedExpenses]);
+
   return (
     <BottomTabs.Navigator
       initialRouteName="RecentExpenses"
-      screenOptions={({navigation}) => ({
+      screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: GlobalStyles.colors.primary500,
         },
@@ -27,7 +54,7 @@ function ExpensesOverview() {
             icon="add"
             size={35}
             color={tintColor}
-            onPress={() => navigation.navigate('ManageExpense', {})}
+            onPress={() => navigation.navigate("ManageExpense", {})}
           />
         ),
       })}

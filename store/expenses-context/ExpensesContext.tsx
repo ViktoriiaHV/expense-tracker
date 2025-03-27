@@ -1,6 +1,10 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
-import { DUMMY_EXPENSES } from "../../constants/dummy-data";
 import { type Expense } from "../../types/expenses.types";
 
 type ExpensesContextType = {
@@ -8,6 +12,7 @@ type ExpensesContextType = {
   addExpense: (_expense: Expense) => void;
   removeExpense: (_expenseId: Expense["id"]) => void;
   updateExpense: (expense: Expense) => void;
+  setFetchedExpenses: (_expenses: Expense[]) => void;
 };
 
 const inititalExpensesState: ExpensesContextType = {
@@ -15,6 +20,7 @@ const inititalExpensesState: ExpensesContextType = {
   addExpense: (_expense: Expense) => {},
   removeExpense: (_expenseId: Expense["id"]) => {},
   updateExpense: (_expense: Expense) => {},
+  setFetchedExpenses: (_expenses: Expense[]) => {},
 };
 
 const ExpensesContext = createContext<ExpensesContextType>(
@@ -27,7 +33,12 @@ export const ExpensesContextProvider = ({
   children: React.ReactNode;
 }) => {
   // @TODO rewrite to reducer
-  const [expenses, setExpenses] = useState<Expense[]>(DUMMY_EXPENSES);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  const setFetchedExpenses = (expenses: Expense[]) => {
+    const reversed = expenses.reverse();
+    setExpenses(reversed);
+  };
 
   const addExpense = useCallback((expense: Expense) => {
     setExpenses((prevExpenses) => [expense, ...prevExpenses]);
@@ -41,7 +52,7 @@ export const ExpensesContextProvider = ({
     [expenses]
   );
 
-  const updateExpense = useCallback(({ id, ...rest }: Partial<Expense>) => {
+  const updateExpense = useCallback(({ id, ...rest }: Expense) => {
     setExpenses((prevExpenses) => {
       const editedExpenseIdx = prevExpenses.findIndex(
         (expense) => expense.id === id
@@ -63,7 +74,7 @@ export const ExpensesContextProvider = ({
 
   return (
     <ExpensesContext.Provider
-      value={{ expenses, addExpense, removeExpense, updateExpense }}
+      value={{ expenses, addExpense, removeExpense, updateExpense, setFetchedExpenses }}
     >
       {children}
     </ExpensesContext.Provider>

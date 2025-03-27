@@ -1,14 +1,15 @@
 import { intlFormat, parse } from "date-fns";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import Input from "./Input";
 import Button from "../../components/UI/Button";
 import { expenseDraft } from "../../constants/dummy-data";
-import { Expense, ExpenseInput } from "../../types/expenses.types";
+import { GlobalStyles } from "../../constants/styles";
+import { Expense, ExpenseDraft, ExpenseInput } from "../../types/expenses.types";
 
 type ExpenseFormProps = {
-  onSubmit: (expenseData: Expense) => void;
+  onSubmit: (expenseData: Expense | ExpenseInput) => void;
   onCancel: () => void;
   mode: "add" | "edit";
   expense: Expense | undefined;
@@ -25,21 +26,52 @@ function ExpenseForm({ onCancel, onSubmit, mode, expense }: ExpenseFormProps) {
     [expense]
   );
 
-  const [userInput, setUserInput] = useState<ExpenseInput>(
+  const [userInput, setUserInput] = useState<ExpenseDraft>(
     existingExpenseInput || expenseDraft
   );
 
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const isDataValid = useCallback(
+    ({ amount, date, description }: ExpenseInput): boolean => {
+      if (amount <= 0 || isNaN(amount)) {
+        setFormError(
+          "Amount input is incorrect. Please use a number greater than 0."
+        );
+        return false;
+      }
+      if (typeof date !== "object" || date.toString() === "Invalid Date") {
+        setFormError("Date is incorrect.");
+        return false;
+      }
+      if (!description.trim()) {
+        setFormError("Description cannot be empty.");
+        return false;
+      }
+      return true;
+    },
+    []
+  );
+
   const handleInputChange = (input: keyof typeof userInput, value: string) => {
+    if (formError) {
+      setFormError(null);
+    }
     setUserInput((prevInput) => ({ ...prevInput, [input]: value }));
   };
 
   const submitHandler = () => {
     const expenseData = {
-      id: existingExpenseInput?.id ?? new Date().toString(),
+      ...(existingExpenseInput?.id ? {id: existingExpenseInput?.id } : {}),
       amount: Number(userInput.amount),
       date: parse(userInput.date, "dd/MM/yyyy", new Date()),
       description: userInput.description,
     };
+
+    if (!isDataValid(expenseData)) {
+      return;
+    }
+
     onSubmit(expenseData);
   };
 
@@ -70,6 +102,7 @@ function ExpenseForm({ onCancel, onSubmit, mode, expense }: ExpenseFormProps) {
         onChangeText={(value) => handleInputChange("description", value)}
         value={userInput.description}
       />
+      {formError && <Text style={styles.errorText}>{formError}</Text>}
       <View style={styles.actionButtonsContainer}>
         <Button variant="link" onPress={onCancel} style={styles.actionButton}>
           Cancel
@@ -98,6 +131,11 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  errorText: {
+    textAlign: "center",
+    color: GlobalStyles.colors.error500,
+    margin: 8,
   },
   actionButtonsContainer: {
     flexDirection: "row",

@@ -1,6 +1,6 @@
-import { Expense, ExpenseInput } from "../types/expenses.types";
+import { Expense, ExpenseDraft } from "../types/expenses.types";
 
-export const expenseDraft: ExpenseInput = {
+export const expenseDraft: ExpenseDraft = {
   amount: "",
   date: "",
   description: "",
